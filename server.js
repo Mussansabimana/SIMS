@@ -10,7 +10,8 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: true,
+  origin: "http://localhost:3000",
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
 app.use(express.json());
@@ -32,11 +33,6 @@ const saltRounds = 10;
 // Authentication middleware
 const authenticate = (req, res, next) => {
   if (req.session.UsersId) {
-    return next();
-  }
-
-  const userId = req.headers['x-user-id'];
-  if (userId) {
     return next();
   }
 
@@ -192,6 +188,7 @@ app.post('/backend-api/spare-parts', authenticate, async (req, res) => {
 
 app.get('/backend-api/spare-parts', authenticate, async (req, res) => {
   try {
+    console.log('Fetching spare parts');
     const rows = await db.all('SELECT * FROM Spare_Part');
     res.json(rows);
   } catch (err) {
